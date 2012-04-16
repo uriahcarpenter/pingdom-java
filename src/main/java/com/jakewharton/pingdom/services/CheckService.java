@@ -1,6 +1,7 @@
 package com.jakewharton.pingdom.services;
 
 import java.util.List;
+
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 import com.jakewharton.pingdom.PingdomApiBuilder;
@@ -136,7 +137,10 @@ public class CheckService extends PingdomApiService {
 		private static final String POST_SEND_NOTIFICATION_WHEN_DOWN = "sendnotificationwhendown";
 		private static final String POST_NOTIFY_AGAIN_EVERY = "notifyagainevery";
 		private static final String POST_NOTIFY_WHEN_BACK_UP = "notifywhenbackup";
-		
+		private static final String POST_HTTP_URL = "url";
+		private static final String POST_HTTP_ENCRYPTION = "encryption";
+		private static final String POST_HTTP_SHOULD_CONTAIN = "shouldcontain";
+
 		private static final String URI = "/checks";
 		
 		private CreateBuilder(CheckService service, String name, String host, CheckType type) {
@@ -262,7 +266,233 @@ public class CheckService extends PingdomApiService {
 			this.postParameter(POST_NOTIFY_WHEN_BACK_UP, value);
 			return this;
 		}
+
+		/**
+		 * Target path on server.
+		 *
+		 * @param value Value.
+		 * @return Builder instance.
+		 */
+		public CreateBuilder httpUrl(String value) {
+			this.postParameter(POST_HTTP_URL, value);
+			return this;
+		}
+
+		/**
+		 * Connection encryption.
+		 *
+		 * @param value Value.
+		 * @return Builder instance.
+		 */
+		public CreateBuilder httpEncryption(boolean value) {
+			this.postParameter(POST_HTTP_ENCRYPTION, value);
+			return this;
+		}
+
+		/**
+		 * Target site should contain this string.
+		 *
+		 * @param value Value.
+		 * @return Builder instance.
+		 */
+		public CreateBuilder httpShouldContain(String value) {
+			this.postParameter(POST_HTTP_SHOULD_CONTAIN, value);
+			return this;
+		}
 	}
+
+	/**
+	 * Modify a check.
+	 *
+	 * @param checkId Check ID.
+	 * @return Builder instance.
+	 */
+	public ModifyBuilder modify(int checkId) {
+		return new ModifyBuilder(this, checkId);
+	}
+
+	/**
+	 * Request builder for {@link ContactService#modify(int)}.
+	 */
+	public static final class ModifyBuilder extends PingdomApiBuilder<Message> {
+		private static final String POST_PAUSED = "paused";
+		private static final String POST_RESOLUTION = "resolution";
+		private static final String POST_CONTACT_IDS = "contactids";
+		private static final String POST_SEND_TO_EMAIL = "sendtoemail";
+		private static final String POST_SEND_TO_SMS = "sendtosms";
+		private static final String POST_SEND_TO_TWITTER = "sendtotwitter";
+		private static final String POST_SEND_TO_IPHONE = "sendtoiphone";
+		private static final String POST_SEND_NOTIFICATION_WHEN_DOWN = "sendnotificationwhendown";
+		private static final String POST_NOTIFY_AGAIN_EVERY = "notifyagainevery";
+		private static final String POST_NOTIFY_WHEN_BACK_UP = "notifywhenbackup";
+		private static final String FIELD_CHECK_ID = "checkid";
+		private static final String POST_HTTP_URL = "url";
+		private static final String POST_HTTP_ENCRYPTION = "encryption";
+		private static final String POST_HTTP_SHOULD_CONTAIN = "shouldcontain";
+
+		private static final String URI = "/checks/{" + FIELD_CHECK_ID + "}";
+
+		public ModifyBuilder(CheckService service, int checkId) {
+			super(service, new TypeToken<Message>() {}, URI, HttpMethod.Put);
+
+			this.field(FIELD_CHECK_ID, checkId);
+		}
+
+		@Override
+		protected JsonElement execute()
+		{
+			JsonElement element = super.execute();
+
+			System.err.println(element);
+
+			return element;
+		}
+
+		/**
+		 * Paused.
+		 *
+		 * @param value Value.
+		 * @return Builder instance.
+		 */
+		public ModifyBuilder paused(boolean value) {
+			this.postParameter(POST_PAUSED, value);
+			return this;
+		}
+
+		/**
+		 * Check resolution.
+		 *
+		 * @param minutes Value (in minutes).
+		 * @return Builder instance.
+		 */
+		public ModifyBuilder resolution(int minutes) {
+			//TODO: check if 1, 5, 15, 30, or 60
+			this.postParameter(POST_RESOLUTION, minutes);
+			return this;
+		}
+
+		/**
+		 * Contact identifiers.
+		 *
+		 * @param list List of integers.
+		 * @return Builder instance.
+		 */
+		public ModifyBuilder contactIds(List<Integer> list) {
+			this.postParameter(POST_CONTACT_IDS, list);
+			return this;
+		}
+
+		/**
+		 * Send alerts as email.
+		 *
+		 * @param value Value.
+		 * @return Builder instance.
+		 */
+		public ModifyBuilder sendToEmail(boolean value) {
+			this.postParameter(POST_SEND_TO_EMAIL, value);
+			return this;
+		}
+
+		/**
+		 * Send alerts as SMS.
+		 *
+		 * @param value Value.
+		 * @return Builder instance.
+		 */
+		public ModifyBuilder sendToSms(boolean value) {
+			this.postParameter(POST_SEND_TO_SMS, value);
+			return this;
+		}
+
+		/**
+		 * Send alerts through Twitter.
+		 *
+		 * @param value Value.
+		 * @return Builder instance.
+		 */
+		public ModifyBuilder sendToTwitter(boolean value) {
+			this.postParameter(POST_SEND_TO_TWITTER, value);
+			return this;
+		}
+
+		/**
+		 * Send alerts to iPhone.
+		 *
+		 * @param value Value.
+		 * @return Builder instance.
+		 */
+		public ModifyBuilder sendToIPhone(boolean value) {
+			this.postParameter(POST_SEND_TO_IPHONE, value);
+			return this;
+		}
+
+		/**
+		 * Send notification when down n times.
+		 *
+		 * @param count Count.
+		 * @return Builder instance.
+		 */
+		public ModifyBuilder sendNotificationWhenDown(int count) {
+			this.postParameter(POST_SEND_NOTIFICATION_WHEN_DOWN, count);
+			return this;
+		}
+
+		/**
+		 * Notify again every n result. 0 means that no extra notifications will be sent.
+		 *
+		 * @param count Count.
+		 * @return Builder instance.
+		 */
+		public ModifyBuilder notifyAgainEvery(int count) {
+			this.postParameter(POST_NOTIFY_AGAIN_EVERY, count);
+			return this;
+		}
+
+		/**
+		 * Notify when back up again.
+		 *
+		 * @param value Value.
+		 * @return Builder instance.
+		 */
+		public ModifyBuilder notifyWhenBackUp(boolean value) {
+			this.postParameter(POST_NOTIFY_WHEN_BACK_UP, value);
+			return this;
+		}
+
+		/**
+		 * Target path on server.
+		 *
+		 * @param value Value.
+		 * @return Builder instance.
+		 */
+		public ModifyBuilder httpUrl(String value) {
+			this.postParameter(POST_HTTP_URL, value);
+			return this;
+		}
+
+		/**
+		 * Connection encryption.
+		 *
+		 * @param value Value.
+		 * @return Builder instance.
+		 */
+		public ModifyBuilder httpEncryption(boolean value) {
+			this.postParameter(POST_HTTP_ENCRYPTION, value);
+			return this;
+		}
+
+		/**
+		 * Target site should contain this string.
+		 *
+		 * @param value Value.
+		 * @return Builder instance.
+		 */
+		public ModifyBuilder httpShouldContain(String value) {
+			this.postParameter(POST_HTTP_SHOULD_CONTAIN, value);
+			return this;
+		}
+	}
+
 
 	/**
 	 * Deletes a check. THIS METHOD IS IRREVERSIBLE! You will lose all collected
